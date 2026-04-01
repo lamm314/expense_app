@@ -1,63 +1,45 @@
 from flask import Flask, render_template, request, redirect
 from services.supabase_client import supabase
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
     try:
-        response = supabase.table("transactions").select("*").execute()
-        transactions = response.data or []
-
-        # ===== Chart default data (avoid undefined error) =====
-        chart_labels = []
-        chart_values = []
-        cat_labels = []
-        cat_values = []
-
-        # ===== Build chart data safely =====
-        try:
-            from datetime import timedelta
-
-            last7 = {}
-            for i in range(7):
-                day = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
-                last7[day] = 0
-
-            for t in transactions:
-                date = str(t.get("date", ""))[:10]
-                if date in last7:
-                    last7[date] += t.get("amount", 0)
-
-            chart_labels = list(last7.keys())[::-1]
-            chart_values = list(last7.values())[::-1]
-
-            category_map = {}
-            for t in transactions:
-                cat = t.get("category", "Other")
-                category_map[cat] = category_map.get(cat, 0) + t.get("amount", 0)
-
-            cat_labels = list(category_map.keys())
-            cat_values = list(category_map.values())
-
-        except Exception as e:
-            print("ERROR CHART:", e)
-
+        res = supabase.table("transactions").select("*").execute()
+        transactions = res.data or []
     except Exception as e:
         print("ERROR FETCH:", e)
         transactions = []
 
-    total = sum(t.get("amount", 0) for t in transactions)
+    # ===== TÍNH TOÁN =====
+    total_income = sum(t["amount"] for t in transactions if t["type"] == "income")
+    total_expense = sum(t["amount"] for t in transactions if t["type"] == "expense")
+    balance = total_income - total_expense
+
+    # ===== CHART 7 NGÀY =====
+    last7 = {}
+    for i in range(7):
+        day = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
+        last7[day] = 0
+
+    for t in transactions:
+        d = str(t.get("date", ""))[:10]
+        if d in last7 and t["type"] == "expense":
+            last7[d] += t["amount"]
+
+    chart_labels = list(last7.keys())[::-1]
+    chart_values = list(last7.values())[::-1]
 
     return render_template(
         "index.html",
         transactions=transactions,
-        total=total,
+        total_income=total_income,
+        total_expense=total_expense,
+        balance=balance,
         chart_labels=chart_labels,
-        chart_values=chart_values,
-        cat_labels=cat_labels,
-        cat_values=cat_values
+        chart_values=chart_values
     )
 
 
@@ -68,6 +50,7 @@ def add():
             "amount": float(request.form.get("amount", 0)),
             "category": request.form.get("category", "General"),
             "note": request.form.get("note", ""),
+            "type": request.form.get("type"),  # income / expense
             "date": datetime.now().isoformat()
         }).execute()
     except Exception as e:

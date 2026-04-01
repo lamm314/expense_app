@@ -4,17 +4,20 @@ body {
     color: white;
 }
 
-.container {
-    padding: 20px;
+.cards {
+    display: flex;
+    gap: 10px;
 }
 
-.header {
-    text-align: center;
+.card {
+    flex: 1;
+    padding: 15px;
+    border-radius: 12px;
 }
 
-.header h1 {
-    color: #22c55e;
-}
+.green { background: #16a34a; }
+.red { background: #dc2626; }
+.blue { background: #2563eb; }
 
 .form {
     display: flex;
@@ -22,8 +25,7 @@ body {
     margin: 20px 0;
 }
 
-.form input {
-    flex: 1;
+.form input, .form select {
     padding: 10px;
     border-radius: 10px;
     border: none;
@@ -34,19 +36,15 @@ body {
     border: none;
     padding: 10px;
     border-radius: 10px;
-    color: white;
 }
 
-canvas {
-    margin: 20px 0;
+table {
+    width: 100%;
+    margin-top: 20px;
     background: #0f172a;
+    border-radius: 10px;
+}
+
+td, th {
     padding: 10px;
-    border-radius: 12px;
-}
-
-.card {
-    background: #0f172a;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 10px;
 }
