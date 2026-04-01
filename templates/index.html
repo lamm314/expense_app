@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="header">
+    <h2>💰 Dashboard</h2>
+    <h1>{{ total }} VND</h1>
+</div>
+
+<!-- Form -->
+<form action="/add" method="post" class="form">
+    <input name="amount" placeholder="Amount">
+    <input name="category" placeholder="Category">
+    <input name="note" placeholder="Note">
+    <button>Add</button>
+</form>
+
+<!-- Chart 7 ngày -->
+<canvas id="lineChart"></canvas>
+
+<!-- Chart category -->
+<canvas id="pieChart"></canvas>
+
+<!-- List -->
+<div class="list">
+{% for t in transactions %}
+    <div class="card">
+        <div class="amount">{{ t.amount }} VND</div>
+        <div class="note">{{ t.note }}</div>
+    </div>
+{% endfor %}
+</div>
+
+<script>
+const labels = {{ chart_labels|tojson }};
+const values = {{ chart_values|tojson }};
+const catLabels = {{ cat_labels|tojson }};
+const catValues = {{ cat_values|tojson }};
+
+// Line chart
+new Chart(document.getElementById("lineChart"), {
+    type: "line",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Last 7 days",
+            data: values,
+            borderColor: "#22c55e",
+            tension: 0.4
+        }]
+    }
+});
+
+// Pie chart
+new Chart(document.getElementById("pieChart"), {
+    type: "pie",
+    data: {
+        labels: catLabels,
+        datasets: [{
+            data: catValues
+        }]
+    }
+});
+</script>
+
+{% endblock %}
