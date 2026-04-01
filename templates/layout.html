@@ -2,15 +2,42 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Expense App</title>
-<link rel="stylesheet" href="/static/style.css">
+<title>Finance App</title>
 
+<link rel="stylesheet" href="/static/style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
-<div class="container">
-    {% block content %}{% endblock %}
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>💰</h2>
+        <ul>
+            <li><a href="/">Dashboard</a></li>
+            <li><a href="#">Wallets</a></li>
+            <li><a href="#">Budgets</a></li>
+            <li><a href="#">Analytics</a></li>
+            <li><a href="#">Transactions</a></li>
+            <li><a href="#">Settings</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="topbar">
+            <input placeholder="Search here..." />
+        </div>
+
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+
+    </div>
+
 </div>
 
 </body>

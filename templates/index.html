@@ -1,49 +1,39 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="top">
-    <h2>💰 Finance Dashboard</h2>
+<h2 class="title">Dashboard</h2>
 
-    <div class="cards">
-        <div class="card green">
-            <p>Income</p>
-            <h3>{{ total_income }} VND</h3>
-        </div>
+<div class="cards">
 
-        <div class="card red">
-            <p>Expense</p>
-            <h3>{{ total_expense }} VND</h3>
-        </div>
-
-        <div class="card blue">
-            <p>Balance</p>
-            <h3>{{ balance }} VND</h3>
-        </div>
+    <div class="card">
+        <p>Total Balance</p>
+        <h2>{{ balance }} VND</h2>
     </div>
+
+    <div class="card">
+        <p>Total Income</p>
+        <h2>{{ total_income }} VND</h2>
+    </div>
+
+    <div class="card">
+        <p>Total Expense</p>
+        <h2>{{ total_expense }} VND</h2>
+    </div>
+
 </div>
 
-<!-- FORM -->
-<form action="/add" method="post" class="form">
-    <input name="amount" placeholder="Amount" required>
-
-    <select name="type">
-        <option value="expense">Chi tiêu</option>
-        <option value="income">Thu nhập</option>
-    </select>
-
-    <input name="category" placeholder="Category">
-    <input name="note" placeholder="Note">
-    <button>Add</button>
-</form>
-
 <!-- CHART -->
-<canvas id="chart"></canvas>
+<div class="chart-box">
+    <canvas id="chart"></canvas>
+</div>
 
 <!-- TABLE -->
+<div class="table-box">
 <table>
 <tr>
     <th>Type</th>
     <th>Amount</th>
+    <th>Category</th>
     <th>Note</th>
 </tr>
 
@@ -51,10 +41,12 @@
 <tr>
     <td>{{ t.type }}</td>
     <td>{{ t.amount }}</td>
+    <td>{{ t.category }}</td>
     <td>{{ t.note }}</td>
 </tr>
 {% endfor %}
 </table>
+</div>
 
 <script>
 new Chart(document.getElementById("chart"), {
@@ -63,7 +55,9 @@ new Chart(document.getElementById("chart"), {
         labels: {{ chart_labels|tojson }},
         datasets: [{
             data: {{ chart_values|tojson }},
-            borderColor: "#22c55e",
+            borderColor: "#4f46e5",
+            backgroundColor: "rgba(79,70,229,0.2)",
+            fill: true,
             tension: 0.4
         }]
     }
