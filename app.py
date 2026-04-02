@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from services.supabase_client import supabase
 from datetime import datetime, timedelta
-
+from collections import defaultdict
 app = Flask(__name__)
 
 @app.route("/")
@@ -41,7 +41,36 @@ def index():
         chart_labels=chart_labels,
         chart_values=chart_values
     )
+@app.route("/wallets")
+def wallets():
+    wallets = supabase.table("wallets").select("*").execute().data or []
+    return render_template("wallets.html", wallets=wallets)
+@app.route("/budgets")
+def budgets():
+    budgets = supabase.table("budgets").select("*").execute().data or []
+    transactions = supabase.table("transactions").select("*").execute().data or []
 
+    spent = defaultdict(float)
+
+    for t in transactions:
+        if t["type"] == "expense":
+            spent[t["category"]] += t["amount"]
+
+    return render_template("budgets.html", budgets=budgets, spent=spent)
+@app.route("/analytics")
+def analytics():
+    transactions = supabase.table("transactions").select("*").execute().data or []
+
+    category = defaultdict(float)
+
+    for t in transactions:
+        if t["type"] == "expense":
+            category[t["category"]] += t["amount"]
+
+    labels = list(category.keys())
+    values = list(category.values())
+
+    return render_template("analytics.html", labels=labels, values=values)
 
 @app.route("/add", methods=["POST"])
 def add():

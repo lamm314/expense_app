@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Budgets</h2>
+
+{% for b in budgets %}
+<div class="card">
+
+    <h3>{{ b.category }}</h3>
+
+    {% set used = spent.get(b.category, 0) %}
+    {% set percent = (used / b.limit_amount * 100) if b.limit_amount > 0 else 0 %}
+
+    <p>{{ used }} / {{ b.limit_amount }}</p>
+
+    <div class="progress">
+        <div class="progress-bar" style="width: {{ percent }}%"></div>
+    </div>
+
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Wallets</h2>
+
+<div class="cards">
+{% for w in wallets %}
+    <div class="card wallet">
+        <h3>{{ w.name }}</h3>
+        <p>{{ w.balance }} VND</p>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}

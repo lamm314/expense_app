@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Analytics</h2>
+
+<canvas id="pie"></canvas>
+
+<script>
+new Chart(document.getElementById("pie"), {
+    type: "pie",
+    data: {
+        labels: {{ labels|tojson }},
+        datasets: [{
+            data: {{ values|tojson }},
+            backgroundColor: ["#4f46e5","#22c55e","#ef4444","#f59e0b"]
+        }]
+    }
+});
+</script>
+
+{% endblock %}
